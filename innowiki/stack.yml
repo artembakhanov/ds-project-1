@@ -1,0 +1,47 @@
+version: '3'
+services:
+  mediawiki:
+    image: mediawiki
+    restart: always
+    ports:
+      - 8080:80
+    networks:
+      - net
+    links:
+      - database
+    deploy:
+      mode:
+        replicated
+      replicas: 6
+    volumes:
+      - wiki_img:/var/www/html/images
+      # - ./LocalSettings.php:/var/www/html/LocalSettings.php
+      # - ./test:/test
+  database:
+    networks:
+      - net
+    image: mariadb
+    volumes:
+      - db_vol:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: my_wiki
+      MYSQL_USER: wikiuser
+      MYSQL_PASSWORD: example
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+  visualizer:
+      image: dockersamples/visualizer:stable
+      ports:
+        - "1337:8080"
+      volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock"
+      deploy:
+        placement:
+          constraints: [node.role == manager]
+      networks:
+        - net
+networks:
+  net:
+volumes:
+  db_vol:
+  wiki_img:
