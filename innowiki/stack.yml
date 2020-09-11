@@ -4,7 +4,7 @@ services:
     image: mediawiki
     restart: always
     ports:
-      - 8080:80
+      - 80:80
     networks:
       - net
     links:
@@ -15,8 +15,12 @@ services:
       replicas: 6
     volumes:
       - wiki_img:/var/www/html/images
+      - ./logo.jpeg:/var/www/html/images/logo.jpeg
       # - ./LocalSettings.php:/var/www/html/LocalSettings.php
-      # - ./test:/test
+      # Extensions
+      # - ./extensions/MobileFrontend:/var/www/html/extensions/MobileFrontend
+      # - ./extensions/Moderation:/var/www/html/extensions/Moderation
+      # - ./extensions/NotebookViewer:/var/www/html/extensions/NotebookViewer
   database:
     networks:
       - net
